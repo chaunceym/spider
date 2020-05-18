@@ -3,9 +3,11 @@ const router = express.Router();
 
 const UserService = require('./../services/user_service')
 /* GET users listing. */
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
   (async ()=>{
-    res.locals.user = UserService.getAllUsers()
+    const users = await UserService.getAllUsers()
+    console.log(users)
+    res.locals.user = users
     res.render('users')
   })()
     .then(r=>{
@@ -17,25 +19,43 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res) => {
-  const {firstName, lastName, age} = req.body
-  const newUser = UserService.addNewUser(firstName, lastName, age)
-  res.json(newUser)
+  (async ()=>{
+    const {name,age} = req.body
+    const newUser = await UserService.addNewUser(name, age)
+    res.json(newUser)
+  })()
+    .then(r=>{
+      console.log(r)
+    })
+    .catch(e=>{
+      console.log(e)
+    })
 });
 
 router.get('/:userId', (req, res) => {
-  const user = UserService.getUserById(Number(req.params.userId))
-  res.locals.user = user
-  console.log(user)
-  res.render('user')
+  (async ()=>{
+    const user = await UserService.getUserById(req.params.userId)
+    res.locals.user = user
+    res.render('user')
+  })()
+    .then(r=>{
+      console.log(r)
+    })
+    .catch(e=>{
+      console.log(e)
+    })
 });
 
 router.post('/:userId/subscription', (req, res, next) => {
-  try {
-    const sub = UserService.createSubscription(Number(req.params.userId), req.body.url)
+  (async ()=>{
+    const sub = await UserService.createSubscription(Number(req.params.userId), req.body.url)
     res.json(sub)
-  } catch (e) {
-    next(e)
-
-  }
+  })()
+    .then(r=>{
+      console.log(r)
+    })
+    .catch(e=>{
+      console.log(e)
+    })
 });
 module.exports = router;

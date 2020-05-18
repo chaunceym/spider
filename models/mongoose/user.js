@@ -4,28 +4,27 @@ const Schema = mongoose.Schema
 const UserSchema = new Schema({
   name: {type: String, required: true, index: 1},
   age: {type: Number, min: 0, max: 120},
-  firstName: {type: String, required: true},
-  lastName: {type: String, required: true},
 })
 
-const UserModel = mongoose.model('user', UserSchema)
+const UserModel = mongoose.model('users', UserSchema)
 
-function insert() {
-  return UserModel.create(user)
+async function insert(user) {
+  return await UserModel.create(user)
 }
 
-function getOneById() {
-  return UserModel.findOne({_id: id})
+async function getOneById(id) {
+  return await UserModel.findOne({_id: id})
 }
 
-function getOneByName(firstName, lastName) {
-  return UserModel.findOne({firstName, lastName})
+async function getOneByName(name) {
+  return await UserModel.findOne({name})
 }
 
-function list(params) {
+async function list(params) {
   const match = {}
   const flow = UserModel.find(match)
-  return flow.exec()
+  console.log(flow.exec())
+  return await flow.exec()
 }
 
 module.exports = {insert, getOneById, getOneByName, list}

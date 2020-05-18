@@ -5,14 +5,30 @@ const UserService = require('./../services/user_service')
 /* GET users listing. */
 router.get('/', (req, res, next) => {
   res.locals.user = UserService.getAllUsers()
-  res.render('user')
+  res.render('users')
 });
 
 router.post('/', (req, res) => {
   console.log(req)
   const {firstName, lastName, age} = req.body
-  const newUser = UserService.insert(firstName, lastName, age)
+  const newUser = UserService.addNewUser(firstName, lastName, age)
   res.json(newUser)
 });
 
+router.get('/:userId', (req, res) => {
+  const user = UserService.getUserById(Number(req.params.userId))
+  res.locals.user = user
+  console.log(user)
+  res.render('user')
+});
+
+router.post('/:userId/subscription', (req, res, next) => {
+  try {
+    const sub = UserService.createSubscription(Number(req.params.userId), req.body.url)
+    res.json(sub)
+  } catch (e) {
+    next(e)
+
+  }
+});
 module.exports = router;

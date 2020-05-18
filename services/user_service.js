@@ -1,4 +1,4 @@
-const User = require('./../models/in_memo/user')
+const User = require('./../models/mongoose/user')
 const Subscription = require('./../models/in_memo/subscription')
 
 module.exports.getAllUsers = () => {
@@ -15,6 +15,9 @@ module.exports.getUserById = (userId) => {
 
 module.exports.createSubscription = (userId,url) => {
   const user = User.getOneById(userId)
-  if(!user) throw Error('there is no user')
+  if(!user) throw Error('the user is not exist')
   return Subscription.insert(userId,url)
 }
+
+
+

@@ -1,12 +1,16 @@
 const winston = require('winston')
 require('winston-daily-rotate-file')
 
-const {createLogger, transports} = winston
+const {Logger, transports} = winston
 const {Console, DailyRotateFile} = transports
 
-const logger = new createLogger({
+winston.add(winston.transports.Console, {
+  name : 'UNIQUE_NAME_HERE',
+  level: 'info',
+});
+
+const logger = new Logger({
   transports: [
-    new Console(),
     new DailyRotateFile({
       name: 'base_logger',
       filename: './logs/info.log.',

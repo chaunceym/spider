@@ -1,60 +1,68 @@
 const express = require('express');
 const router = express.Router();
-
+const HTTPRequestParamError = require('./../errors/http_request_param_error')
 const UserService = require('./../services/user_service')
 /* GET users listing. */
-router.get('/', (req, res) => {
-  (async ()=>{
+router.get('/', (req, res, next) => {
+  (async () => {
+    throw new HTTPRequestParamError('page', '请指定月页面', 'page is not found')
     const users = await UserService.getAllUsers()
     console.log(users)
     res.locals.user = users
-    res.render('users')
   })()
-    .then(r=>{
-      console.log(r)
+    .then(() => {
+      res.render('users')
     })
-    .catch(e=>{
-      console.log(e)
+    .catch(e => {
+      next(e)
     })
 });
 
 router.post('/', (req, res) => {
-  (async ()=>{
-    const {name,age} = req.body
+  (async () => {
+    const {name, age} = req.body
     const newUser = await UserService.addNewUser(name, age)
     res.json(newUser)
   })()
-    .then(r=>{
+    .then(r => {
       console.log(r)
     })
-    .catch(e=>{
+    .catch(e => {
       console.log(e)
     })
 });
 
 router.get('/:userId', (req, res) => {
-  (async ()=>{
-    const user = await UserService.getUserById(req.params.userId)
+  (async () => {
+    const {userId} = req.params
+    if (userId.length < 5) {
+      throw new HTTPRequestParamError(
+        'userId', '用户 id 不能为空',
+        'user id can not be empty'
+      )
+    }
+    const user = await UserService.getUserById(userId)
     res.locals.user = user
     res.render('user')
   })()
-    .then(r=>{
+    .then(r => {
       console.log(r)
     })
-    .catch(e=>{
+    .catch(e => {
       console.log(e)
+      res.json(e)
     })
 });
 
 router.post('/:userId/subscription', (req, res, next) => {
-  (async ()=>{
+  (async () => {
     const sub = await UserService.createSubscription(Number(req.params.userId), req.body.url)
     res.json(sub)
   })()
-    .then(r=>{
+    .then(r => {
       console.log(r)
     })
-    .catch(e=>{
+    .catch(e => {
       console.log(e)
     })
 });

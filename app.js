@@ -5,8 +5,8 @@ const cookieParser = require('cookie-parser')
 const logger = require('./utils/loggers/logger')
 const errorHandler = require('./middlewares/http_error_handler')
 require('./services/mongodb_connection')
-const cookieSession = require('cookie-session')
 
+const session = require('express-session')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 
@@ -19,10 +19,11 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(cookieSession({
-  name: 'spider',
-  keys: ['assadasdfsdagsadgsdf'],
-  masAge: 86400
+app.use(session({
+  secret: 'asdfkgsjakl',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {secure: true}
 }))
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -33,10 +34,10 @@ app.use('/user', usersRouter);
 app.use(errorHandler())
 
 process.on('uncaughtException', (err) => {
-  logger.error('uncaught exception', { err });
+  logger.error('uncaught exception', {err});
 });
 
 process.on('unhandledRejection', (reason, p) => {
-  logger.error('unhandledRejection', { reason, p });
+  logger.error('unhandledRejection', {reason, p});
 });
 module.exports = app;

@@ -3,13 +3,25 @@ const router = express.Router()
 const JWT = require('jsonwebtoken')
 
 const userRouter = require('./users')
+
+const User = require('./../models/mongoose/user')
+const crypto = require('crypto')
+const pbkdf2Async = require('bluebird').promisify(crypto.pbkdf2)
 /* GET home page. */
 
-router.get('/login', (req, res, next) => {
-  const {username} = req.query
-  const user = {username, expireAt: Date.now().valueOf() + (20 * 60 * 1000)}
-  const token = JWT.sign(user, 'asdffniangsddngo')
-  res.send(token)
+router.post('/login', (req, res, next) => {
+  (async () => {
+    const {username, password} = req.body
+    const cipher = await crypto.pbkdf2Async(password, 'adfjikjionmaeawqgg', 10000, 512, 'sha256')
+      .then()
+    const created = await User.insert({username, cipher})
+  })()
+    .then(r => {
+
+    })
+    .catch(e => {
+
+    })
 })
 
 router.get('/hello', (req, res, next) => {

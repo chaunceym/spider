@@ -12,10 +12,10 @@ router.get('/login', (req, res, next) => {
 })
 
 router.get('/hello', (req, res, next) => {
+  console.log(req.session)
   const {username} = req.session.user
   res.send(`<h1>hello: ${username}</h1>`)
-
-});
+})
 
 router.use('/user', userRouter)
 

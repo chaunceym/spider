@@ -23,7 +23,7 @@ app.use(session({
   secret: 'asdfkgsjakl',
   resave: false,
   saveUninitialized: true,
-  cookie: {secure: true}
+  cookie: {maxAge: 10000}
 }))
 app.use(express.static(path.join(__dirname, 'public')));
 

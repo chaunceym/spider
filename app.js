@@ -21,8 +21,8 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(cookieSession({
   name: 'spider',
-  key: 'assadasdfsdagsadgsdf',
-  masAge: '86400'
+  keys: ['assadasdfsdagsadgsdf'],
+  masAge: 86400
 }))
 app.use(express.static(path.join(__dirname, 'public')));
 

@@ -7,20 +7,14 @@ const users = []
 
 router.get('/login', (req, res, next) => {
   const {username} = req.query
-  if (!users.find(u => u.username === username)) {
-    res.set('Set-Cookie', `username=${req.query.username}`)
-    users.push({username})
-  }
-  res.send()
+  req.session.user = {username}
+  res.send('done')
 })
 
 router.get('/hello', (req, res, next) => {
-  const {username} = req.cookies
-  if (users.find(u => u.username === username)) {
-    res.send(`<h1>Hello! ${req.cookies.username}</h1>`)
-  } else {
-    res.send('no login during this time server is up')
-  }
+  const {username} = req.session.user
+  res.send(`<h1>hello: ${username}</h1>`)
+
 });
 
 router.use('/user', userRouter)

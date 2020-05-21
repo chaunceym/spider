@@ -5,7 +5,6 @@ const UserService = require('./../services/user_service')
 /* GET users listing. */
 router.get('/', (req, res, next) => {
   (async () => {
-    throw new HTTPRequestParamError('page', '请指定月页面', 'page is not found')
     const users = await UserService.getAllUsers()
     console.log(users)
     res.locals.user = users

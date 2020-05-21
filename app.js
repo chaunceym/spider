@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const logger = require('./utils/loggers/logger')
 const errorHandler = require('./middlewares/http_error_handler')
 require('./services/mongodb_connection')
+const cookieSession = require('cookie-session')
 
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
@@ -18,6 +19,11 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(cookieSession({
+  name: 'spider',
+  key: 'assadasdfsdagsadgsdf',
+  masAge: '86400'
+}))
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);

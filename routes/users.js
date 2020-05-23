@@ -2,35 +2,40 @@ const express = require('express');
 const router = express.Router();
 const HTTPRequestParamError = require('./../errors/http_request_param_error')
 const UserService = require('./../services/user_service')
-/* GET users listing. */
-router.get('/', (req, res, next) => {
+const auth = require('./../middlewares/auth')
+
+router.post('/', (req, res) => {
   (async () => {
-    const users = await UserService.getAllUsers()
-    console.log(users)
-    res.locals.user = users
+    const {username, password, name} = req.body
+    const result = await UserService.addNewUser({
+      username,
+      password,
+      name
+    })
+    return result
   })()
-    .then(() => {
-      res.render('users')
+    .then(r => {
+      console.log(r)
     })
     .catch(e => {
       next(e)
     })
 });
 
-router.post('/', (req, res) => {
+router.get('/', (req, res, next) => {
   (async () => {
-    const {name, age} = req.body
-    const newUser = await UserService.addNewUser(name, age)
-    res.json(newUser)
+    const users = await UserService.getAllUsers()
+    return {
+      users
+    }
   })()
     .then(r => {
-      console.log(r)
+      res.data = r
     })
     .catch(e => {
-      console.log(e)
+      next(e)
     })
 });
-
 router.get('/:userId', (req, res) => {
   (async () => {
     const {userId} = req.params
@@ -53,7 +58,7 @@ router.get('/:userId', (req, res) => {
     })
 });
 
-router.post('/:userId/subscription', (req, res, next) => {
+router.post('/:userId/subscription', auth(), (req, res, next) => {
   (async () => {
     const sub = await UserService.createSubscription(Number(req.params.userId), req.body.url)
     res.json(sub)
